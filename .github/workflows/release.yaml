@@ -39,4 +39,4 @@ jobs:
           git config --global user.name "$GITHUB_ACTOR"
           git config --global user.email '<>'
           git commit -am "update version"
-          git push origin ${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}} --force
+          git push origin refs/heads/main --force
