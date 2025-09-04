@@ -12,6 +12,14 @@ on:
     #     description: |
     #       The Cargo package name.
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+permissions:
+  contents: read
+env:
+  RUSTFLAGS: -Dwarnings
+
 jobs:
   clippy:
     name: Clippy
