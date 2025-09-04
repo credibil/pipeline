@@ -42,6 +42,6 @@ jobs:
         run: |
           git config --global user.name "$GITHUB_ACTOR"
           git config --global user.email '<>'
-          # git commit -am "update version"
-          git commit -C HEAD@{1}
+          git commit -am "update version"
+          # git commit -C HEAD@{1}
           git push --force
