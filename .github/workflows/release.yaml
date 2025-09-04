@@ -11,6 +11,14 @@ on:
         required: true
         description: The new version to set.
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+permissions:
+  contents: write
+env:
+  RUSTFLAGS: -Dwarnings
+
 jobs:
   version:
     name: Set version
