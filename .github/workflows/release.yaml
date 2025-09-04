@@ -25,6 +25,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.head_ref }}
       - uses: taiki-e/install-action@v2
         with:
           tool: cargo-release
@@ -38,7 +40,7 @@ jobs:
 
       - name: Commit 
         run: |
-          git config --global user.name 'Your Name'
-          git config --global user.email 'your-username@users.noreply.github.com'
+          git config --global user.name "$GITHUB_ACTOR"
+          git config --global user.email '<>'
           git commit -am "update version"
           git push
