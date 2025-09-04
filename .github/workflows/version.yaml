@@ -17,8 +17,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      # - uses: dtolnay/install@cargo-outdated
-      - uses: dtolnay/install@cargo-release
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: cargo-release
       - run: |
           sudo apt-get update
           sudo apt-get -y install libwebkit2gtk-4.1-dev
