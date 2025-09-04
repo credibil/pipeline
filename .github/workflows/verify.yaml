@@ -11,10 +11,6 @@ on:
     #     required: true
     #     description: |
     #       The Cargo package name.
-    #   app-name:
-    #     type: string
-    #     description: |
-    #       The Container App name.
 
 jobs:
   clippy:
@@ -54,41 +50,41 @@ jobs:
           sudo apt-get -y install libwebkit2gtk-4.1-dev
       - run: cargo test --doc --all-features
 
-  build-wasm:
-    name: Build wasm
+  # build-wasm:
+  #   name: Build wasm
+  #   runs-on: ubuntu-latest
+  #   timeout-minutes: 45
+  #   steps:
+  #     - uses: actions/checkout@v5
+  #     - uses: dtolnay/rust-toolchain@master
+  #       with:
+  #         toolchain: stable
+  #     - run: cargo build --target wasm32-unknown-unknown --release -p ${{ inputs.package }}
+
+  miri:
+    name: Miri
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
       - uses: actions/checkout@v5
-      - uses: dtolnay/rust-toolchain@master
-        with:
-          toolchain: stable
-      - run: cargo build --target wasm32-unknown-unknown --release -p ${{ inputs.package }}
-
-  # miri:
-  #   name: Miri
-  #   runs-on: ubuntu-latest
-  #   timeout-minutes: 45
-  #   steps:
-  #     - uses: actions/checkout@v5
-  #     - uses: dtolnay/rust-toolchain@miri
-  #     - run: cargo miri setup
-  #     - run: cd vc && cargo miri test --features derive,rc,unstable
-  #       env:
-  #         MIRIFLAGS: -Zmiri-strict-provenance
+      - uses: dtolnay/rust-toolchain@miri
+      - run: cargo miri setup
+      - run: cargo miri test --features derive,rc,unstable
+        # env:
+        #   MIRIFLAGS: -Zmiri-strict-provenance
   #     - run: cd test_suite && cargo miri test --features unstable
   #       env:
   #         MIRIFLAGS: -Zmiri-strict-provenance
 
-  # outdated:
-  #   name: Outdated
-  #   runs-on: ubuntu-latest
-  #   timeout-minutes: 45
-  #   steps:
-  #     - uses: actions/checkout@v5
-  #     - uses: dtolnay/install@cargo-outdated
-  #     - run: |
-  #         sudo apt-get update
-  #         sudo apt-get -y install libwebkit2gtk-4.1-dev
-  #     - run: cargo outdated --packages credibil-vc --exit-code 1
-      # - run: cargo outdated --workspace --exit-code 1
+  outdated:
+    name: Outdated
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v5
+      - uses: dtolnay/install@cargo-outdated
+      - run: |
+          sudo apt-get update
+          sudo apt-get -y install libwebkit2gtk-4.1-dev
+      # - run: cargo outdated --packages credibil-vc --exit-code 1
+      - run: cargo outdated --workspace --exit-code 1
