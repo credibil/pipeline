@@ -1,0 +1,109 @@
+name: Build
+
+on:
+  workflow_call:
+    inputs:
+      package:
+        type: string
+        required: true
+        description: |
+          The Cargo package name.
+      app-name:
+        type: string
+        description: |
+          The Container App name.
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+permissions:
+  contents: read
+env:
+  RUSTFLAGS: -Dwarnings
+
+jobs:
+  stable:
+    name: Rust ${{matrix.rust}}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        rust: [stable, beta]
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v5
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: ${{matrix.rust}}
+      - run: cargo build
+
+  # nightly:
+  #   name: Rust nightly ${{matrix.os == 'windows' && '(windows)' || ''}}
+  #   runs-on: ${{matrix.os}}-latest
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       os: [ubuntu, windows]
+  #   timeout-minutes: 45
+  #   steps:
+  #     - uses: actions/checkout@v5
+  #     - uses: dtolnay/rust-toolchain@nightly
+  #     - run: cargo build
+  #     - run: cargo test
+  #       if: matrix.os != 'windows'
+  #     - run: cargo check --tests
+  #       env:
+  #         RUSTFLAGS: --cfg exhaustive ${{env.RUSTFLAGS}}
+  #       if: matrix.os != 'windows'
+
+  # minimal:
+  #   name: Minimal versions
+  #   runs-on: ubuntu-latest
+  #   timeout-minutes: 45
+  #   steps:
+  #     - uses: actions/checkout@v5
+  #     - uses: dtolnay/rust-toolchain@nightly
+  #     - run: cargo generate-lockfile -Z minimal-versions
+  #     - run: cargo check --locked --workspace
+
+  # doc:
+  #   name: Documentation
+  #   runs-on: ubuntu-latest
+  #   timeout-minutes: 45
+  #   env:
+  #     RUSTDOCFLAGS: -Dwarnings
+  #   steps:
+  #     - uses: actions/checkout@v5
+  #     - uses: dtolnay/rust-toolchain@nightly
+  #     - uses: dtolnay/install@cargo-docs-rs
+  #     - run: cargo docs-rs -p credibil_vc
+
+  # miri:
+  #   name: Miri
+  #   runs-on: ubuntu-latest
+  #   timeout-minutes: 45
+  #   steps:
+  #     - uses: actions/checkout@v5
+  #     - uses: dtolnay/rust-toolchain@miri
+  #     - run: cargo miri setup
+  #     - run: cd vc && cargo miri test --features derive,rc,unstable
+  #       env:
+  #         MIRIFLAGS: -Zmiri-strict-provenance
+  #     - run: cd test_suite && cargo miri test --features unstable
+  #       env:
+  #         MIRIFLAGS: -Zmiri-strict-provenance
+
+  # outdated:
+  #   name: Outdated
+  #   runs-on: ubuntu-latest
+  #   if: github.event_name != 'pull_request'
+  #   timeout-minutes: 45
+  #   steps:
+  #     - uses: actions/checkout@v5
+  #     - uses: dtolnay/install@cargo-outdated
+  #     - run: |
+  #         sudo apt-get update
+  #         sudo apt-get -y install libwebkit2gtk-4.1-dev
+
+  #     - run: cargo outdated --packages credibil-vc --exit-code 1
+  # - run: cargo outdated --workspace --exit-code 1
