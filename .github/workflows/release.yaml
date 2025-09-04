@@ -31,10 +31,6 @@ jobs:
         with:
           tool: cargo-release
 
-      # - run: |
-      #     sudo apt-get update
-      #     sudo apt-get -y install libwebkit2gtk-4.1-dev
-
       - name: Release
         run: cargo release version ${{ inputs.version }} --execute --no-confirm
 
@@ -43,4 +39,4 @@ jobs:
           git config --global user.name "$GITHUB_ACTOR"
           git config --global user.email '<>'
           git commit -am "update version"
-          git push origin HEAD --force
+          git push origin HEAD:refs/heads/HEAD --force
