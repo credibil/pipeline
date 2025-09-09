@@ -1,3 +1,7 @@
+# Creates a patch version on a release branch. 
+# The workflow bumps the patch version and updates the release notes for the
+# selected branch.
+
 name: Create Patch
 
 on:

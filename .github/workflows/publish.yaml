@@ -1,3 +1,6 @@
+# Publishes a release branch. 
+# The workflow tags and releases the selected branch.
+
 name: Publish Release
 
 on:

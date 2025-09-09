@@ -1,3 +1,7 @@
+# Create a release. 
+# The workflow creates a new release branch and updates the version of the main
+# branch.
+
 name: Create Release
 
 on:
