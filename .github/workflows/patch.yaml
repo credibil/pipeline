@@ -32,6 +32,10 @@ jobs:
       - name: Set git identity
         uses: ./.github/actions/git-identity
 
+      - name: Current version
+        id: current
+        uses: ./.github/actions/cargo-version
+
       - name: Install cargo-release
         uses: taiki-e/install-action@v2
         with:
@@ -39,6 +43,12 @@ jobs:
 
       - name: Bump version
         run: cargo release version patch --execute --no-confirm
+
+      - name: Check semver
+        uses: obi1kenobi/cargo-semver-checks-action@v2
+        with:
+          baseline-rev: ${{ github.ref_name }}
+          release-type: patch
 
       - name: Patch version
         id: patch
