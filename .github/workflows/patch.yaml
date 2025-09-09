@@ -2,11 +2,6 @@ name: Create Patch
 
 on:
   workflow_call:
-    # inputs:
-    #   bump-type:
-    #     description: The type of version bump to perform
-    #     default: minor
-    #     type: string
 
 permissions:
   contents: write

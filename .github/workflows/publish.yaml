@@ -2,11 +2,6 @@ name: Publish Release
 
 on:
   workflow_call:
-    # inputs:
-    #   bump-type:
-    #     description: The type of version bump to perform
-    #     default: minor
-    #     type: string
 
 jobs:
   skip:
@@ -18,13 +13,13 @@ jobs:
           echo "This workflow only runs on the 'release-*' branches"
           exit 1
         
-  # verify:
-  #   name: Verify release
-  #   uses: credibil/pipeline/.github/workflows/verify.yaml@main
+  verify:
+    name: Verify release
+    uses: ./.github/workflows/verify.yaml
 
   tag:
     name: Tag release
-    # needs: verify
+    needs: verify
     runs-on: ubuntu-latest
     outputs:
       tag: ${{ steps.tag.outputs.new_tag }}
