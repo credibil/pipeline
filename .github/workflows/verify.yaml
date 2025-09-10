@@ -5,8 +5,11 @@ name: Verify
 
 on:
   workflow_call:
-  # pull_request:
-  #   types: [opened, synchronize, reopened, ready_for_review]
+    inputs:
+      outdated:
+        description: 'List of dependencies to ignore for cargo-outdated'
+        type: string
+        required: false
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
@@ -71,4 +74,4 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - uses: dtolnay/install@cargo-outdated
-      - run: cargo outdated --workspace --exit-code 1
+      - run: cargo outdated --workspace --exit-code 1 --ignore ${{ inputs.outdated }}
