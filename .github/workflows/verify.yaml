@@ -5,8 +5,8 @@ name: Verify
 
 on:
   workflow_call:
-  pull_request:
-    # types: [opened, synchronize, reopened, ready_for_review]
+  # pull_request:
+  #   types: [opened, synchronize, reopened, ready_for_review]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
