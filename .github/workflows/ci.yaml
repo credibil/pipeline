@@ -80,3 +80,10 @@ jobs:
         
       - run: cargo outdated --workspace --exit-code 1 --ignore ${{ inputs.outdated }}
         if: ${{ inputs.outdated != '' }}
+
+  deny:
+    name: Deny
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: EmbarkStudios/cargo-deny-action@v1
