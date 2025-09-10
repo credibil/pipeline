@@ -74,4 +74,9 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - uses: dtolnay/install@cargo-outdated
+        
+      - run: cargo outdated --workspace --exit-code 1
+        if: ${{ inputs.outdated == '' }}
+        
       - run: cargo outdated --workspace --exit-code 1 --ignore ${{ inputs.outdated }}
+        if: ${{ inputs.outdated != '' }}
