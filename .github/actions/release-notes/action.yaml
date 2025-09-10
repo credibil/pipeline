@@ -48,5 +48,4 @@ runs:
         EOF
 
         git commit -am "Update release notes for ${{ inputs.version }}"
-        # git push origin HEAD:ci/next-${{ inputs.version }}
         git push origin HEAD:${{ inputs.branch }}
