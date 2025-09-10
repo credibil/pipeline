@@ -6,6 +6,9 @@ name: Publish Release
 on:
   workflow_call:
 
+permissions:
+  contents: read
+
 jobs:
   skip:
     name: Skipped
@@ -16,13 +19,13 @@ jobs:
           echo "This workflow only runs on the 'release-*' branches"
           exit 1
         
-  verify:
-    name: Verify release
-    uses: ./.github/workflows/verify.yaml
+  ci:
+    name: CI
+    uses: ./.github/workflows/ci.yaml
 
   tag:
     name: Tag release
-    needs: verify
+    needs: ci
     runs-on: ubuntu-latest
     outputs:
       tag: ${{ steps.tag.outputs.new_tag }}
