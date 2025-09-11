@@ -32,7 +32,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - uses: dtolnay/rust-toolchain@nightly
+      # - uses: dtolnay/rust-toolchain@stable
       - uses: taiki-e/install-action@nextest
       - run: cargo nextest run --all --all-features  --no-tests=pass
 
@@ -41,8 +41,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - uses: dtolnay/rust-toolchain@nightly
-      - run: cargo test --doc --all-features
+      # - uses: dtolnay/rust-toolchain@stable
+      - run: cargo test --doc --all-features --workspace
 
   vet:
     name: Vet
