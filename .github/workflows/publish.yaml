@@ -5,13 +5,15 @@ name: Publish Release
 
 on:
   workflow_call:
+    inputs:
+      artifacts:
+        description: Release artifacts to attach to the release
+        type: string
+        required: false
     outputs:
       version:
         description: The release version
         value: ${{ jobs.tag.outputs.version }}
-      tag:
-        description: The tag created for the release
-        value: ${{ jobs.tag.outputs.tag }}
 
 permissions:
   contents: read
@@ -89,7 +91,7 @@ jobs:
           tag: ${{ needs.tag.outputs.tag }}
           name: Release ${{ needs.tag.outputs.tag }}
           body: ${{ steps.notes.outputs.release_notes }}
-          generateReleaseNotes: true # add link to full changelog
+          generateReleaseNotes: true # full changelog link
           immutableCreate: true
-          # artifacts: ${{ inputs.artifacts }}
-          # artifactContentType: ${{ inputs.artifactContentType }}
+          artifacts: ${{ inputs.artifacts }}
+          # artifactContentType: ${{ inputs.content-type }}
