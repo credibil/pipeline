@@ -5,6 +5,13 @@ name: Publish Release
 
 on:
   workflow_call:
+    outputs:
+      version:
+        description: The release version
+        value: ${{ jobs.tag.outputs.version }}
+      tag:
+        description: The tag created for the release
+        value: ${{ jobs.tag.outputs.tag }}
 
 permissions:
   contents: read
@@ -29,6 +36,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       tag: ${{ steps.tag.outputs.new_tag }}
+      version: ${{ steps.cargo.outputs.version }}
     steps:
       - uses: actions/checkout@v5
         with:
@@ -82,4 +90,6 @@ jobs:
           name: Release ${{ needs.tag.outputs.tag }}
           body: ${{ steps.notes.outputs.release_notes }}
           generateReleaseNotes: true # add link to full changelog
-          # bodyFile: https://github.com/${{ github.repository }}/blob/${{ steps.latest.outputs.branch }}/RELEASES.md
+          immutableCreate: true
+          # artifacts: ${{ inputs.artifacts }}
+          # artifactContentType: ${{ inputs.artifactContentType }}
