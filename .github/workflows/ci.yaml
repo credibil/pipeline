@@ -43,10 +43,13 @@ jobs:
       - name: Check if library target exists
         id: lib
         run: |
-          result=$(cargo check --lib --workspace 2>&1 | grep 'no library targets found')
-          echo "exists=$result" >> GITHUB_OUTPUT
+          if cargo check --lib --workspace 2>&1 | grep -q 'no library targets found'; then
+            echo "exists=false" >> $GITHUB_OUTPUT
+          else
+            echo "exists=true" >> $GITHUB_OUTPUT
+          fi
       - run: cargo test --doc --all-features --workspace
-        if: steps.lib.outputs.exists == ''
+        if: steps.lib.outputs.exists == 'true'
 
   vet:
     name: Vet
