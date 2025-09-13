@@ -19,7 +19,6 @@ runs:
         GH_TOKEN: ${{ github.token }}
       run: |
         set -ex
-        # git fetch origin
         rustc .github/scripts/release-branch.rs -o /tmp/release-branch
         version=`/tmp/release-branch`
 

@@ -40,7 +40,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
+      - name: Check if library target exists
+        id: lib
+        run: |
+          result=$(cargo check --lib --workspace 2>&1 | grep 'no library targets found')
+          echo "exists=$result" >> GITHUB_OUTPUT
       - run: cargo test --doc --all-features --workspace
+        if: steps.lib.outputs.exists == ''
 
   vet:
     name: Vet
