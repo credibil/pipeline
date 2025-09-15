@@ -9,7 +9,6 @@ on:
       outdated:
         description: 'List of dependencies to ignore for cargo-outdated'
         type: string
-        default: ''
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
@@ -80,8 +79,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - uses: dtolnay/install@cargo-outdated 
+      - uses: dtolnay/install@cargo-outdated
+        
+      - run: cargo outdated --workspace --depth 1 --exit-code 1
+        if: ${{ inputs.outdated == '' }}
+        
       - run: cargo outdated --workspace --depth 1 --ignore ${{ inputs.outdated }} --exit-code 1 
+        if: ${{ inputs.outdated != '' }}
 
   deny:
     name: Deny
