@@ -38,11 +38,11 @@ jobs:
       - uses: actions/checkout@v5
 
       - name: Git identity
-        uses: credibil/pipeline/.github/actions/git-identity
+        uses: credibil/pipeline/.github/actions/git-identity@main
 
       - name: Release version
         id: release
-        uses: credibil/pipeline/.github/actions/cargo-version
+        uses: credibil/pipeline/.github/actions/cargo-version@main
 
       # create release branch from main (already set to next version)
       - name: Release branch
@@ -58,7 +58,7 @@ jobs:
       - uses: actions/checkout@v5
         
       - name: Git identity
-        uses: credibil/pipeline/.github/actions/git-identity
+        uses: credibil/pipeline/.github/actions/git-identity@main
       
       - name: Install cargo-release
         uses: taiki-e/install-action@v2
@@ -71,7 +71,7 @@ jobs:
 
       - name: Next version
         id: next
-        uses: credibil/pipeline/.github/actions/cargo-version
+        uses: credibil/pipeline/.github/actions/cargo-version@main
 
       # create a branch for the main updates
       - name: Branch to update 'main'
@@ -82,7 +82,7 @@ jobs:
 
       # update release notes for the next release
       - name: Update RELEASES.md
-        uses: credibil/pipeline/.github/actions/release-notes
+        uses: credibil/pipeline/.github/actions/release-notes@main
         with:
           version: ${{ steps.next.outputs.version }}
           branch: ci/next-${{ steps.next.outputs.version }}
