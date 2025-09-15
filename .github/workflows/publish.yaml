@@ -30,7 +30,7 @@ jobs:
         
   ci:
     name: CI
-    uses: credibil/pipeline/.github/workflows/ci.yaml
+    uses: credibil/pipeline/.github/workflows/ci.yaml@main
 
   tag:
     name: Tag release
