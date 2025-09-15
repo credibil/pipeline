@@ -30,7 +30,7 @@ jobs:
         
   ci:
     name: CI
-    uses: ./.github/workflows/ci.yaml
+    uses: credibil/pipeline/.github/workflows/ci.yaml
 
   tag:
     name: Tag release
@@ -45,15 +45,15 @@ jobs:
           fetch-depth: 0
 
       - name: Set git identity
-        uses: ./.github/actions/git-identity
+        uses: credibil/pipeline/.github/actions/git-identity
 
       # - name: Get latest release
       #   id: latest
-      #   uses: ./.github/actions/latest-release
+      #   uses: credibil/pipeline/.github/actions/latest-release
 
       - name: Cargo version
         id: cargo
-        uses: ./.github/actions/cargo-version
+        uses: credibil/pipeline/.github/actions/cargo-version
         
       - name: Update release notes
         run: |
