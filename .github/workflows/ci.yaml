@@ -80,13 +80,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - uses: dtolnay/install@cargo-outdated
-        
-      # - run: cargo outdated --workspace --depth 1 --exit-code 1
-      #   if: ${{ inputs.outdated == '' }}
-        
+      - uses: dtolnay/install@cargo-outdated 
       - run: cargo outdated --workspace --depth 1 --ignore ${{ inputs.outdated }} --exit-code 1 
-        # if: ${{ inputs.outdated != '' }}
 
   deny:
     name: Deny
