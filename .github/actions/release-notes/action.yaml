@@ -8,6 +8,9 @@ inputs:
   branch:
     description: The branch to push the updated release notes to.
     required: true
+  # token:
+  #   description: GitHub token with write permissions to the repository.
+  #   default: ${{ github.token }}
 
 # git reset --hard origin/${{ steps.latest.outputs.branch }}
 runs:
@@ -15,8 +18,8 @@ runs:
   steps:
     - name: Archive previous release
       shell: bash
-      env:
-        GH_TOKEN: ${{ github.token }}
+      # env:
+      #   GH_TOKEN: ${{ inputs.token }}
       run: |
         set -ex
 
@@ -27,8 +30,8 @@ runs:
 
     - name: Create next release notes
       shell: bash
-      env:
-        GH_TOKEN: ${{ github.token }}
+      # env:
+      #   GH_TOKEN: ${{ inputs.token }}
       run: |
         set -ex
         sed -i '0,/---/d' RELEASES.md
