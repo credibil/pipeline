@@ -27,14 +27,9 @@ jobs:
       - run: |
           echo "This workflow only runs on the 'release-*' branches"
           exit 1
-        
-  ci:
-    name: CI
-    uses: credibil/pipeline/.github/workflows/ci.yaml@main
 
   tag:
     name: Tag release
-    needs: ci
     runs-on: ubuntu-latest
     outputs:
       tag: ${{ steps.tag.outputs.new_tag }}
