@@ -9,7 +9,7 @@ on:
       outdated:
         description: 'List of dependencies to ignore for cargo-outdated'
         type: string
-        required: false
+        default: ''
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
