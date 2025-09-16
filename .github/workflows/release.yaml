@@ -91,6 +91,7 @@ jobs:
       - name: PR to update 'main'
         uses: peter-evans/create-pull-request@v7
         with:
+          token: ${{ secrets.GITHUB_TOKEN }}
           branch: ci/next-${{ steps.next.outputs.version }}
           title: Bump to ${{ steps.next.outputs.version }}
           body: |
