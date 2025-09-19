@@ -38,7 +38,14 @@ runs:
       if: ${{ inputs.type == 'current' }}
       shell: bash
       run: |
-        sed -i "/### Changed/a  \n${{ steps.notes.outputs.result }}\n" RELEASES.md
+        # sed -i "/### Changed/a  \n${{ steps.notes.outputs.result }}\n" RELEASES.md
+        
+        sed -i <<-EOF
+          /### Changed/a 
+
+          ${{ steps.notes.outputs.result }}
+        EOF
+        RELEASES.md
 
     # -------------------------------------------
     # Create release notes for the next version
@@ -62,19 +69,17 @@ runs:
         sed -i '0,/---/d' RELEASES.md
         archive=$(cat RELEASES.md)
 
-        cat > RELEASES.md <<EOF
-        ## ${{ inputs.version }}
+        cat > RELEASES.md <<-EOF
+          ## ${{ inputs.version }}
 
-        Unreleased
+          Unreleased
 
-        ### Added
+          ### Added
 
-        ### Changed
+          ### Changed
 
-        ${{ steps.notes.outputs.result }}
-
-        ---
-        $archive
+          ---
+          $archive
         EOF
 
         git commit -am "Update release notes for ${{ inputs.version }}"
