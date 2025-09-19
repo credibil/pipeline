@@ -23,12 +23,19 @@ runs:
         version_x=$(echo $version | sed 's/.$/x/')
         sed -i "/ARCHIVE_START/a * [$version_x](https://github.com/${{ github.repository }}/blob/release-$version/RELEASES.md)" RELEASES.md
 
-    - name: Generate Release Notes
+    - name: Generate release notes
       id: notes
-      uses: RedCrafter07/release-notes-action@v1
+      uses: actions/github-script@v8
       with:
-        tag-name: ${{ github.event.inputs.tag-name }}
-        # token: ${{ secrets.GITHUB_TOKEN }}
+        result-encoding: string
+        script: |
+          const response = await github.rest.repos.generateReleaseNotes({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            tag_name: "v0.5.0",
+            previous_tag_name: "v0.1.0"
+          })
+          return response.data.body;
 
     - name: Create next release notes
       shell: bash
@@ -46,7 +53,7 @@ runs:
 
         ### Changed
 
-        ${{ steps.notes.outputs.release-notes }}
+        ${{ steps.notes.outputs.result }}
 
         ---
         $archive
