@@ -23,6 +23,13 @@ runs:
         version_x=$(echo $version | sed 's/.$/x/')
         sed -i "/ARCHIVE_START/a * [$version_x](https://github.com/${{ github.repository }}/blob/release-$version/RELEASES.md)" RELEASES.md
 
+    - name: Generate Release Notes
+      id: notes
+      uses: RedCrafter07/release-notes-action@v1
+      with:
+        tag-name: ${{ github.event.inputs.tag-name }}
+        # token: ${{ secrets.GITHUB_TOKEN }}
+
     - name: Create next release notes
       shell: bash
       run: |
@@ -38,6 +45,8 @@ runs:
         ### Added
 
         ### Changed
+
+        ${{ steps.notes.outputs.release-notes }}
 
         ---
         $archive
