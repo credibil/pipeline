@@ -44,10 +44,18 @@ jobs:
         id: release
         uses: credibil/pipeline/.github/actions/cargo-version@main
 
+      - name: Update RELEASES.md
+        uses: credibil/pipeline/.github/actions/release-notes@main
+        with:
+          type: current
+          version: ${{ steps.release.outputs.version }}
+          # branch: release-${{ steps.release.outputs.version }}
+
       # create release branch from main (already set to next version)
       - name: Release branch
         run: |
           git push origin HEAD:release-${{ steps.release.outputs.version }}
+  
 
   # Bump the version and create a PR to merge it back into 'main'
   next:
@@ -73,19 +81,20 @@ jobs:
         id: next
         uses: credibil/pipeline/.github/actions/cargo-version@main
 
+      # update release notes for the next release
+      - name: Update RELEASES.md
+        uses: credibil/pipeline/.github/actions/release-notes@main
+        with:
+          type: next
+          version: ${{ steps.next.outputs.version }}
+          # branch: ci/next-${{ steps.next.outputs.version }}
+
       # create a branch for the main updates
       - name: Branch to update 'main'
         run: |
           set -ex
           git commit -am "Bump to ${{ steps.next.outputs.version }}"
           git push origin HEAD:ci/next-${{ steps.next.outputs.version }}
-
-      # update release notes for the next release
-      - name: Update RELEASES.md
-        uses: credibil/pipeline/.github/actions/release-notes@main
-        with:
-          version: ${{ steps.next.outputs.version }}
-          branch: ci/next-${{ steps.next.outputs.version }}
 
       # create PR to update main version
       - name: PR to update 'main'

@@ -1,29 +1,26 @@
 name: Prepare release notes
-description: Prepare release notes for the upcoming release
+description: Prepare release notes for an upcoming release
 
 inputs:
   version:
     description: The version to use to create release notes.
     required: true
-  branch:
-    description: The branch to push the updated release notes to.
-    required: true
+  type:
+    description: Whether the release notes are for the 'current' or 'next' release.
+    default: current
+  # branch:
+  #   description: The branch to push the updated release notes to.
+  #   required: true
 
 # git reset --hard origin/${{ steps.latest.outputs.branch }}
 runs:
   using: composite
   steps:
-    - name: Archive previous release
-      shell: bash
-      run: |
-        set -ex
-
-        title=$(sed -n '1p' RELEASES.md)
-        version=$(echo $title | sed 's/## //')
-        version_x=$(echo $version | sed 's/.$/x/')
-        sed -i "/ARCHIVE_START/a * [$version_x](https://github.com/${{ github.repository }}/blob/release-$version/RELEASES.md)" RELEASES.md
-
+    # -------------------------------------------
+    # Generate release notes for the current version
+    # -------------------------------------------
     - name: Generate release notes
+      if: ${{ inputs.type == 'current' }}
       id: notes
       uses: actions/github-script@v8
       with:
@@ -37,7 +34,28 @@ runs:
           })
           return response.data.body;
 
+    - name: Update RELEASES.md
+      if: ${{ inputs.type == 'current' }}
+      shell: bash
+      run: |
+        sed -i "/### Changed/a  \n${{ steps.notes.outputs.result }}\n" RELEASES.md
+
+    # -------------------------------------------
+    # Create release notes for the next version
+    # -------------------------------------------
+    - name: Archive previous release
+      if: ${{ inputs.type == 'next' }}
+      shell: bash
+      run: |
+        set -ex
+
+        title=$(sed -n '1p' RELEASES.md)
+        version=$(echo $title | sed 's/## //')
+        version_x=$(echo $version | sed 's/.$/x/')
+        sed -i "/ARCHIVE_START/a * [$version_x](https://github.com/${{ github.repository }}/blob/release-$version/RELEASES.md)" RELEASES.md
+
     - name: Create next release notes
+      if: ${{ inputs.type == 'next' }}
       shell: bash
       run: |
         set -ex
@@ -60,4 +78,4 @@ runs:
         EOF
 
         git commit -am "Update release notes for ${{ inputs.version }}"
-        git push origin HEAD:${{ inputs.branch }}
+        # git push origin HEAD:${{ inputs.branch }}
