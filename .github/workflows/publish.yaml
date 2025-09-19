@@ -87,7 +87,5 @@ jobs:
           tag: ${{ needs.tag.outputs.tag }}
           name: Release ${{ needs.tag.outputs.tag }}
           body: ${{ steps.notes.outputs.release_notes }}
-          generateReleaseNotes: true # full changelog link
           immutableCreate: true
           artifacts: ${{ inputs.artifacts }}
-          # artifactContentType: ${{ inputs.content-type }}
