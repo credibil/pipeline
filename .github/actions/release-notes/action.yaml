@@ -29,7 +29,7 @@ runs:
           const response = await github.rest.repos.generateReleaseNotes({
             owner: context.repo.owner,
             repo: context.repo.repo,
-            tag_name: ${{ inputs.version }},
+            tag_name: "v${{ inputs.version }}",
           })
           return response.data.body;
 
@@ -39,7 +39,7 @@ runs:
       run: |
         body=$(sed -n '/---/,$!p' RELEASES.md)
         archive=$(sed -n '/---/,$p' RELEASES.md)
-        
+
         cat > RELEASES.md <<EOF
         $body
 
