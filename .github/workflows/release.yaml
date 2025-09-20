@@ -44,16 +44,18 @@ jobs:
         id: release
         uses: credibil/pipeline/.github/actions/cargo-version@main
 
-      - name: Update RELEASES.md
-        uses: credibil/pipeline/.github/actions/release-notes@main
-        with:
-          type: current
-          version: ${{ steps.release.outputs.version }}
-
       # create release branch from main (already set to next version)
-      - name: Release branch
+      - name: Create release branch
         run: |
           git push origin HEAD:release-${{ steps.release.outputs.version }}
+          # git reset --hard origin/release-${{ steps.release.outputs.version }}
+
+      - name: Update branch release notes
+        uses: credibil/pipeline/.github/actions/release-notes@main
+        with:
+          type: changelog
+          version: ${{ steps.release.outputs.version }}
+          branch: release-${{ steps.release.outputs.version }}
   
 
   # Bump the version and create a PR to merge it back into 'main'
@@ -80,19 +82,21 @@ jobs:
         id: next
         uses: credibil/pipeline/.github/actions/cargo-version@main
 
-      # update release notes for the next release
-      - name: Update RELEASES.md
-        uses: credibil/pipeline/.github/actions/release-notes@main
-        with:
-          type: next
-          version: ${{ steps.next.outputs.version }}
-
       # create a branch for the main updates
       - name: Branch to update 'main'
         run: |
           set -ex
           git commit -am "Bump to ${{ steps.next.outputs.version }}"
           git push origin HEAD:ci/next-${{ steps.next.outputs.version }}
+          # git reset --hard origin/ci/next-${{ steps.next.outputs.version }}
+
+      # update release notes for the next release
+      - name: Update release notes for next version
+        uses: credibil/pipeline/.github/actions/release-notes@main
+        with:
+          type: template
+          version: ${{ steps.next.outputs.version }}
+          branch: ci/next-${{ steps.next.outputs.version }}
 
       # create PR to update main version
       - name: PR to update 'main'
