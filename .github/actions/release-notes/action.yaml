@@ -78,7 +78,6 @@ runs:
 
         ### Changed
 
-        ---
         $archive
         EOF
 
