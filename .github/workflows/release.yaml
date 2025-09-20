@@ -49,7 +49,6 @@ jobs:
         with:
           type: current
           version: ${{ steps.release.outputs.version }}
-          # branch: release-${{ steps.release.outputs.version }}
 
       # create release branch from main (already set to next version)
       - name: Release branch
@@ -87,7 +86,6 @@ jobs:
         with:
           type: next
           version: ${{ steps.next.outputs.version }}
-          # branch: ci/next-${{ steps.next.outputs.version }}
 
       # create a branch for the main updates
       - name: Branch to update 'main'
