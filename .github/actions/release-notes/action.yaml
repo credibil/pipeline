@@ -6,21 +6,21 @@ inputs:
     description: The version to use to create release notes.
     required: true
   type:
-    description: Whether the release notes are for the 'current' or 'next' release.
-    default: current
-  # branch:
-  #   description: The branch to push the updated release notes to.
-  #   required: true
+    description: Whether the release notes are a 'changelog' or 'template'.
+    default: changelog
+  branch:
+    description: The branch to push the updated release notes to.
+    required: true
 
 # git reset --hard origin/${{ steps.latest.outputs.branch }}
 runs:
   using: composite
   steps:
     # -------------------------------------------
-    # Generate release notes for the current version
+    # Generate release notes for the current release
     # -------------------------------------------
     - name: Generate release notes
-      if: ${{ inputs.type == 'current' }}
+      if: ${{ inputs.type == 'changelog' }}
       id: notes
       uses: actions/github-script@v8
       with:
@@ -34,7 +34,7 @@ runs:
           return response.data.body;
 
     - name: Update RELEASES.md
-      if: ${{ inputs.type == 'current' }}
+      if: ${{ inputs.type == 'changelog' }}
       shell: bash
       run: |
         body=$(sed -n '/---/,$!p' RELEASES.md)
@@ -48,14 +48,11 @@ runs:
         $archive
         EOF
 
-        git commit -am "Update release notes for ${{ inputs.version }}"
-        git push origin
-
     # -------------------------------------------
-    # Create release notes for the next version
+    # Create template for the next version
     # -------------------------------------------
     - name: Archive previous release notes
-      if: ${{ inputs.type == 'next' }}
+      if: ${{ inputs.type == 'template' }}
       shell: bash
       run: |
         set -ex
@@ -66,7 +63,7 @@ runs:
         sed -i "/ARCHIVE_START/a * [$version_x](https://github.com/${{ github.repository }}/blob/release-$version/RELEASES.md)" RELEASES.md
 
     - name: Create next release notes
-      if: ${{ inputs.type == 'next' }}
+      if: ${{ inputs.type == 'template' }}
       shell: bash
       run: |
         set -ex
@@ -85,5 +82,8 @@ runs:
         $archive
         EOF
 
+    - name: Update branch with changes
+      shell: bash
+      run: |
         git commit -am "Update release notes for ${{ inputs.version }}"
-        git push origin
+        git push origin HEAD:${{ inputs.branch }}
