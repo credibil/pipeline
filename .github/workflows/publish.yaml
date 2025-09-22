@@ -43,19 +43,15 @@ jobs:
       - name: Set git identity
         uses: credibil/pipeline/.github/actions/git-identity@main
 
-      # - name: Get latest release
-      #   id: latest
-      #   uses: credibil/pipeline/.github/actions/latest-release@main
-
       - name: Cargo version
         id: cargo
         uses: credibil/pipeline/.github/actions/cargo-version@main
         
-      - name: Update release notes
+      - name: Date release notes
         run: |
           set -ex
           sed -i "s/^Unreleased/Released $(date +'%Y-%m-%d')/" RELEASES.md
-          git commit --allow-empty -am "Release ${{ steps.cargo.outputs.version }}"
+          git commit -am "Release ${{ steps.cargo.outputs.version }}"
           git push
 
       - name: Bump version and push tag
@@ -75,17 +71,13 @@ jobs:
       - name: Get release notes
         id: notes
         run: |
-          notes="$(cat RELEASES.md)"
-          echo "release_notes<<EOF" >> $GITHUB_OUTPUT
-          echo "$notes" >> $GITHUB_OUTPUT
-          echo "---" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+          echo "notes=$(cat RELEASES.md)" >> $GITHUB_OUTPUT
 
       - name: Create a GitHub release
         uses: ncipollo/release-action@v1
         with:
           tag: ${{ needs.tag.outputs.tag }}
           name: Release ${{ needs.tag.outputs.tag }}
-          body: ${{ steps.notes.outputs.release_notes }}
+          body: ${{ steps.notes.outputs.notes }}
           immutableCreate: true
           artifacts: ${{ inputs.artifacts }}
