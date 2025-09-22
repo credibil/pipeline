@@ -104,4 +104,4 @@ runs:
       shell: bash
       run: |
         git commit -am "Update release notes for ${{ inputs.version }}"
-        git push origin
+        
