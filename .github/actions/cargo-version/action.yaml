@@ -16,38 +16,37 @@ outputs:
 runs:
   using: composite
   steps:
-    - name: Current version
-      id: current
-      shell: bash
-      run: |
-        version=$(grep '^version =' Cargo.toml | head -n 1 | sed 's/.*"\(.*\)"/\1/')
-        echo "version=$version" >> $GITHUB_OUTPUT
-
     - name: Increment version
       if: ${{ inputs.increment != 'none' }}
       id: increment
       shell: bash
       run: |
-        current=${{ steps.current.outputs.version }}
+        current=$(grep '^version =' Cargo.toml | head -n 1 | sed 's/.*"\(.*\)"/\1/')
+
         case "${{ inputs.increment }}" in
           major)
             IFS='.' read -r major minor patch <<< "$current"
-            new_version="$((major + 1)).0.0"
+            incremented="$((major + 1)).0.0"
             ;;
           minor)
             IFS='.' read -r major minor patch <<< "$current"
-            new_version="$major.$((minor + 1)).0"
+            incremented="$major.$((minor + 1)).0"
             ;;
           patch)
             IFS='.' read -r major minor patch <<< "$current"
-            new_version="$major.$minor.$((patch + 1))"
+            incremented="$major.$minor.$((patch + 1))"
             ;;
           *)
-            new_version="${{ inputs.increment }}"
+            incremented="${{ inputs.increment }}"
             ;;
         esac
 
-        sed -i '' -e "s/^version = \".*\"/version = \"$new_version\"/" Cargo.toml
-        git commit -am "Bump to ${{ steps.next.outputs.version }}"
+        sed -i '' -e "s/^version = \".*\"/version = \"$incremented\"/" Cargo.toml
+        git commit -am "Increment Cargo version to $incremented"
 
-        echo "version=$new_version" >> $GITHUB_OUTPUT
+    - name: Read version
+      id: current
+      shell: bash
+      run: |
+        version=$(grep '^version =' Cargo.toml | head -n 1 | sed 's/.*"\(.*\)"/\1/')
+        echo "version=$version" >> $GITHUB_OUTPUT
