@@ -102,4 +102,6 @@ runs:
 
     - name: Update branch with changes
       shell: bash
-      run: git commit -am "Update release notes for ${{ inputs.version }}"
+      run: |
+        git commit -am "Update release notes for ${{ inputs.version }}"
+        git push origin
