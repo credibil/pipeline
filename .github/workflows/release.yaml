@@ -63,19 +63,6 @@ jobs:
         
       - name: Git identity
         uses: credibil/pipeline/.github/actions/git-identity@main
-      
-      # - name: Install cargo-release
-      #   uses: taiki-e/install-action@v2
-      #   with:
-      #     tool: cargo-release
-
-      # # bump to next version
-      # - name: Next version
-      #   run: cargo release version ${{ inputs.increment }} --execute --no-confirm
-
-      # - name: Next version
-      #   id: next
-      #   uses: credibil/pipeline/.github/actions/cargo-version@main
 
       - name: Bump version
         id: next

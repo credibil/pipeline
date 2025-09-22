@@ -41,7 +41,7 @@ runs:
             ;;
         esac
 
-        sed -i '' -e "s/^version = \".*\"/version = \"$incremented\"/" Cargo.toml
+        sed -i -E "s/^version = .*/version = \"$incremented\"/1" Cargo.toml
         git commit -am "Increment Cargo version to $incremented"
 
     - name: Read version
