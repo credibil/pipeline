@@ -1,17 +1,53 @@
 name: Cargo version
 description: Get the version from Cargo.toml.
 
+inputs:
+  increment:
+    description: |
+      The version number or one of 'none', 'major', 'minor', 'patch'. 
+      If 'none', the current version is returned.
+    default: none
+
 outputs:
   version:
-    description: Cargo version.
-    value: ${{ steps.cargo.outputs.version }}
+    description: Cargo version
+    value: ${{ steps.current.outputs.version }}
 
 runs:
   using: composite
   steps:
-    - name: Cargo version
-      id: cargo
+    - name: Current version
+      id: current
       shell: bash
       run: |
         version=$(grep '^version =' Cargo.toml | head -n 1 | sed 's/.*"\(.*\)"/\1/')
         echo "version=$version" >> $GITHUB_OUTPUT
+
+    - name: Increment version
+      if: ${{ inputs.increment != 'none' }}
+      id: increment
+      shell: bash
+      run: |
+        current=${{ steps.current.outputs.version }}
+        case "${{ inputs.increment }}" in
+          major)
+            IFS='.' read -r major minor patch <<< "$current"
+            new_version="$((major + 1)).0.0"
+            ;;
+          minor)
+            IFS='.' read -r major minor patch <<< "$current"
+            new_version="$major.$((minor + 1)).0"
+            ;;
+          patch)
+            IFS='.' read -r major minor patch <<< "$current"
+            new_version="$major.$minor.$((patch + 1))"
+            ;;
+          *)
+            new_version="${{ inputs.increment }}"
+            ;;
+        esac
+
+        sed -i '' -e "s/^version = \".*\"/version = \"$new_version\"/" Cargo.toml
+        git commit -am "Bump to ${{ steps.next.outputs.version }}"
+
+        echo "version=$new_version" >> $GITHUB_OUTPUT

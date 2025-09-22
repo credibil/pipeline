@@ -8,9 +8,6 @@ inputs:
   release-type:
     description: One of 'major', 'minor', 'patch', or 'next'.
     default: major
-  branch:
-    description: The branch to push the updated release notes to.
-    required: true
 
 runs:
   using: composite
@@ -105,6 +102,4 @@ runs:
 
     - name: Update branch with changes
       shell: bash
-      run: |
-        git commit -am "Update release notes for ${{ inputs.version }}"
-        git push origin HEAD:${{ inputs.branch }}
+      run: git commit -am "Update release notes for ${{ inputs.version }}"
