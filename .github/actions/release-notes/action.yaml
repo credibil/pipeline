@@ -3,24 +3,20 @@ description: Prepare release notes for an upcoming release
 
 inputs:
   version:
-    description: The version to use to create release notes.
+    description: The release notes version.
     required: true
-  type:
-    description: Whether the release notes are a 'changelog' or 'template'.
-    default: changelog
+  release-type:
+    description: One of 'major', 'minor', 'patch', or 'next'.
+    default: major
   branch:
     description: The branch to push the updated release notes to.
     required: true
 
-# git reset --hard origin/${{ steps.latest.outputs.branch }}
 runs:
   using: composite
   steps:
-    # -------------------------------------------
-    # Generate release notes for the current release
-    # -------------------------------------------
     - name: Generate release notes
-      if: ${{ inputs.type == 'changelog' }}
+      if: ${{ inputs.release-type != 'next' }}
       id: notes
       uses: actions/github-script@v8
       with:
@@ -33,8 +29,11 @@ runs:
           })
           return response.data.body;
 
-    - name: Update RELEASES.md
-      if: ${{ inputs.type == 'changelog' }}
+    # -------------------------------------------
+    # Major/minor
+    # -------------------------------------------
+    - name: Create RELEASES.md
+      if: ${{ inputs.release-type == 'major' }} || ${{ inputs.release-type == 'minor' }}
       shell: bash
       run: |
         body=$(sed -n '/---/,$!p' RELEASES.md)
@@ -49,10 +48,33 @@ runs:
         EOF
 
     # -------------------------------------------
-    # Create template for the next version
+    # Patch
     # -------------------------------------------
-    - name: Archive previous release notes
-      if: ${{ inputs.type == 'template' }}
+    - name: Patch RELEASES.md
+      if: ${{ inputs.release-type == 'patch' }}
+      shell: bash
+      run: |
+        previous=$(cat RELEASES.md)
+
+        cat > RELEASES.md <<EOF
+        ## ${{ inputs.version }}
+
+        Unreleased
+
+        ## Fixed
+
+        ${{ steps.notes.outputs.result }}
+
+        ---
+
+        $previous
+        EOF
+
+    # -------------------------------------------
+    # Next
+    # -------------------------------------------
+    - name: Next RELEASES.md
+      if: ${{ inputs.release-type == 'next' }}
       shell: bash
       run: |
         set -ex
@@ -63,7 +85,7 @@ runs:
         sed -i "/ARCHIVE_START/a * [$version_x](https://github.com/${{ github.repository }}/blob/release-$version/RELEASES.md)" RELEASES.md
 
     - name: Create next release notes
-      if: ${{ inputs.type == 'template' }}
+      if: ${{ inputs.release-type == 'next' }}
       shell: bash
       run: |
         set -ex

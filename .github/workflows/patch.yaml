@@ -58,4 +58,5 @@ jobs:
         uses: credibil/pipeline/.github/actions/release-notes@main
         with:
           version: ${{ steps.patch.outputs.version }}
+          release-type: patch
           branch: ${{ github.ref_name }}

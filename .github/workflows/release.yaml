@@ -53,7 +53,7 @@ jobs:
       - name: Update branch release notes
         uses: credibil/pipeline/.github/actions/release-notes@main
         with:
-          type: changelog
+          release-type: major
           version: ${{ steps.release.outputs.version }}
           branch: release-${{ steps.release.outputs.version }}
   
@@ -94,7 +94,7 @@ jobs:
       - name: Update release notes for next version
         uses: credibil/pipeline/.github/actions/release-notes@main
         with:
-          type: template
+          release-type: next
           version: ${{ steps.next.outputs.version }}
           branch: ci/next-${{ steps.next.outputs.version }}
 
