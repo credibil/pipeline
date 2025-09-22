@@ -32,18 +32,6 @@ jobs:
       - name: Set git identity
         uses: credibil/pipeline/.github/actions/git-identity@main
 
-      # - name: Current version
-      #   id: current
-      #   uses: credibil/pipeline/.github/actions/cargo-version@main
-
-      # - name: Install cargo-release
-      #   uses: taiki-e/install-action@v2
-      #   with:
-      #     tool: cargo-release
-
-      # - name: Bump version
-      #   run: cargo release version patch --execute --no-confirm
-
       - name: Bump version
         id: patch
         uses: credibil/pipeline/.github/actions/cargo-version@main
@@ -56,16 +44,11 @@ jobs:
           baseline-rev: ${{ github.ref_name }}
           release-type: patch
 
-      # - name: Patch version
-      #   id: patch
-      #   uses: credibil/pipeline/.github/actions/cargo-version@main
-
       - name: Update release notes
         uses: credibil/pipeline/.github/actions/release-notes@main
         with:
           version: ${{ steps.patch.outputs.version }}
           release-type: patch
-          branch: ${{ github.ref_name }}
 
       - name: Push changes
         run: git push origin HEAD:${{ github.ref_name }}
