@@ -51,8 +51,8 @@ jobs:
           version: ${{ steps.release.outputs.version }}
 
       - name: Push to release branch
-        run: git push HEAD:release-${{ steps.release.outputs.version }}
-        # run: git push origin HEAD:release-${{ steps.release.outputs.version }}
+        # run: git push HEAD:release-${{ steps.release.outputs.version }}
+        run: git push origin HEAD:release-${{ steps.release.outputs.version }}
   
   # Bump the version and create a PR to merge it back into 'main'
   next:

@@ -43,6 +43,7 @@ runs:
 
         sed -i -E "s/^version = .*/version = \"$incremented\"/1" Cargo.toml
         git commit -am "Increment Cargo version to $incremented"
+        git push origin
 
     - name: Read version
       id: current
