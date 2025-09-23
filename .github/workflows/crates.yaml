@@ -15,6 +15,6 @@ jobs:
       
     - name: Publish workspace crates
       # if: startsWith(github.ref_name, 'release-')
-      run: cargo publish --workspace --registry=credibil
+      run: cargo publish --workspace --registry credibil
       env:
         CARGO_REGISTRIES_CREDIBIL_TOKEN: ${{ secrets.CARGO_REGISTRIES_CREDIBIL_TOKEN }}
