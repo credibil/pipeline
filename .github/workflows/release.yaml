@@ -44,9 +44,6 @@ jobs:
         id: release
         uses: credibil/pipeline/.github/actions/cargo-version@main
 
-      # - name: Create release branch
-      #   run: git push origin HEAD:release-${{ steps.release.outputs.version }}
-
       - name: Update branch release notes
         uses: credibil/pipeline/.github/actions/release-notes@main
         with:

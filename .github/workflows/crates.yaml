@@ -2,30 +2,18 @@
 name: Publish Crates
 
 on:
-  push:
-    tags:
-    - 'v*'
+  workflow_call:
 
 jobs:
-  publish:
-    if: github.repository == 'bytecodealliance/wasmtime'
+  crates:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-      with:
-        submodules: true
-    - run: rustup update stable && rustup default stable
-    - run: |
-        rustc scripts/publish.rs
-        ./publish publish
+    - uses: actions/checkout@v5
+      
+    - name: Publish workspace crates
+      if: startsWith(github.ref_name, 'release-')
+      run: cargo publish --workspace
       env:
         CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
-    
-    # Manifest and publish the wasi-preview1-component-adapter-provider
-    - uses: ./.github/actions/fetch-run-id
-    - uses: ./.github/actions/build-adapter-provider
-      with:
-        run-id: ${{ env.COMMIT_RUN_ID }}
-    - run: cargo publish -p wasi-preview1-component-adapter-provider --allow-dirty
-      env:
-        CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
+        CARGO_REGISTRY_DEFAULT: ${{ vars.CARGO_REGISTRY_DEFAULT }}
+        # CARGO_REGISTRIES_CREDIBIL_TOKEN: ${{ secrets.CARGO_REGISTRIES_CREDIBIL_TOKEN }}
