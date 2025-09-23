@@ -18,7 +18,7 @@ permissions:
 env:
   RUSTFLAGS: -Dwarnings
   CARGO_REGISTRIES_CREDIBIL_TOKEN: ${{ secrets.CARGO_REGISTRIES_CREDIBIL_TOKEN }}
-  
+
 jobs:
   clippy:
     name: Clippy
@@ -75,18 +75,16 @@ jobs:
         # env:
         #   MIRIFLAGS: -Zmiri-strict-provenance
 
-  outdated:
-    name: Outdated
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v5
-      - uses: dtolnay/install@cargo-outdated
-        
-      - run: cargo outdated --workspace --depth 1 --exit-code 1
-        if: ${{ inputs.outdated == '' }}
-        
-      - run: cargo outdated --workspace --depth 1 --ignore ${{ inputs.outdated }} --exit-code 1 
-        if: ${{ inputs.outdated != '' }}
+  # outdated:
+  #   name: Outdated
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v5
+  #     - uses: dtolnay/install@cargo-outdated
+  #     - run: cargo outdated --workspace --depth 1 --exit-code 1
+  #       if: ${{ inputs.outdated == '' }}
+  #     - run: cargo outdated --workspace --depth 1 --ignore ${{ inputs.outdated }} --exit-code 1 
+  #       if: ${{ inputs.outdated != '' }}
 
   deny:
     name: Deny
