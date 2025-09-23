@@ -22,7 +22,6 @@ runs:
       shell: bash
       run: |
         current=$(grep '^version =' Cargo.toml | head -n 1 | sed 's/.*"\(.*\)"/\1/')
-
         case "${{ inputs.increment }}" in
           major)
             IFS='.' read -r major minor patch <<< "$current"
