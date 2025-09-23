@@ -3,6 +3,9 @@ name: Publish Crates
 
 on:
   workflow_call:
+    
+permissions:
+  contents: read
 
 jobs:
   crates:
