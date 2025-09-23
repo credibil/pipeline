@@ -52,7 +52,7 @@ jobs:
           set -ex
           sed -i "s/^Unreleased/Released $(date +'%Y-%m-%d')/" RELEASES.md
           git commit -am "Release ${{ steps.cargo.outputs.version }}"
-          git push
+          git push origin HEAD:${{ github.ref_name }}
 
       - name: Bump version and push tag
         id: tag
@@ -71,7 +71,12 @@ jobs:
       - name: Get release notes
         id: notes
         run: |
-          echo "notes=$(cat RELEASES.md)" >> $GITHUB_OUTPUT
+          notes=$(cat RELEASES.md)
+          {
+            echo 'notes<<EOF'
+            echo "${notes}"
+            echo EOF
+          } >> $GITHUB_OUTPUT
 
       - name: Create a GitHub release
         uses: ncipollo/release-action@v1
