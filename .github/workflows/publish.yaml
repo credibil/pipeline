@@ -51,7 +51,7 @@ jobs:
         run: |
           set -ex
           sed -i "s/^Unreleased/Released $(date +'%Y-%m-%d')/" RELEASES.md
-
+          
           git commit -am "Release ${{ steps.cargo.outputs.version }}"
           git push origin
 
