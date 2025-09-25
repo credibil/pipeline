@@ -25,23 +25,24 @@ runs:
         case "${{ inputs.increment }}" in
           major)
             IFS='.' read -r major minor patch <<< "$current"
-            incremented="$((major + 1)).0.0"
+            version="$((major + 1)).0.0"
             ;;
           minor)
             IFS='.' read -r major minor patch <<< "$current"
-            incremented="$major.$((minor + 1)).0"
-            ;;
-          patch)
-            IFS='.' read -r major minor patch <<< "$current"
-            incremented="$major.$minor.$((patch + 1))"
+            version="$major.$((minor + 1)).0"
             ;;
           *)
-            incremented="${{ inputs.increment }}"
+            IFS='.' read -r major minor patch <<< "$current"
+            version="$major.$minor.$((patch + 1))"
             ;;
         esac
 
-        sed -i -E "s/^version = .*/version = \"$incremented\"/1" Cargo.toml
-        git commit -am "Increment Cargo version to $incremented"
+        # update workspace version PLUS referenced workspace crates
+        sed -i '' "s/^version = .*/version = \"$version\"/1" Cargo.toml
+        sed -Ei '' "s/(^.*path = .*), version = \"[0-9.]+\"(.*$)/\1, version = \"$version\"\2/g" Cargo.toml
+        sed -Ei '' "s/(^.*)version = \"[0-9.]+\", (.*)(path = .*$)/\1version = \"$version\", \2 \3/g" Cargo.toml
+
+        git commit -am "Increment Cargo version to $version"
 
     - name: Read version
       id: current
