@@ -51,11 +51,9 @@ jobs:
         run: |
           set -ex
           sed -i "s/^Unreleased/Released $(date +'%Y-%m-%d')/" RELEASES.md
-
-          cat RELEASES.md
           
           git commit -am "Release ${{ steps.cargo.outputs.version }}"
-          git push origin HEAD:${{ github.ref_name }}
+          git push origin
 
       - name: Bump version and push tag
         id: tag
