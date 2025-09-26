@@ -17,6 +17,9 @@ permissions:
   contents: write
   pull-requests: write
 
+env:
+  CARGO_REGISTRIES_CREDIBIL_TOKEN: ${{ secrets.CARGO_REGISTRIES_CREDIBIL_TOKEN }}
+
 jobs:
   skip:
     name: Skipped
