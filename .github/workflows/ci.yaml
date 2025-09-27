@@ -20,7 +20,7 @@ permissions:
   contents: read
 env:
   RUSTFLAGS: -Dwarnings
-  CARGO_REGISTRIES_CREDIBIL_TOKEN: ${{ secrets.credibil-registry-token }}
+  CARGO_REGISTRIES_CREDIBIL_TOKEN: ${{ secrets.CARGO_REGISTRIES_CREDIBIL_TOKEN }}
 
 jobs:
   clippy:
