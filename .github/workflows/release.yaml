@@ -12,13 +12,16 @@ on:
         description: The type of version bump to perform
         default: minor
         type: string
-
+    secrets:
+      credibil-registry-token:
+        required: true
+        
 permissions:
   contents: write
   pull-requests: write
 
 env:
-  CARGO_REGISTRIES_CREDIBIL_TOKEN: ${{ secrets.CARGO_REGISTRIES_CREDIBIL_TOKEN }}
+  CARGO_REGISTRIES_CREDIBIL_TOKEN: ${{ secrets.credibil-registry-token }}
 
 jobs:
   skip:

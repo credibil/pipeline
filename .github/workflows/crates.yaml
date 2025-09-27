@@ -3,7 +3,10 @@ name: Publish Crates
 
 on:
   workflow_call:
-    
+    secrets:
+      credibil-registry-token:
+        required: true
+        
 permissions:
   contents: read
 
@@ -17,4 +20,4 @@ jobs:
       # if: startsWith(github.ref_name, 'release-')
       run: cargo publish --workspace --registry credibil
       env:
-        CARGO_REGISTRIES_CREDIBIL_TOKEN: ${{ secrets.CARGO_REGISTRIES_CREDIBIL_TOKEN }}
+        CARGO_REGISTRIES_CREDIBIL_TOKEN: ${{ secrets.credibil-registry-token }}
