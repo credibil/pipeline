@@ -23,7 +23,7 @@ jobs:
   # Increment patch version and update RELEASES.md
   # Push back to the release-<version> branch for review and publishing
   patch:
-    name: Bump patch version
+    name: Patch release
     if: startsWith(github.ref_name, 'release-')
     runs-on: ubuntu-latest
     steps:
