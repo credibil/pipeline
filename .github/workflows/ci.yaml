@@ -21,6 +21,8 @@ permissions:
 env:
   RUSTFLAGS: -Dwarnings
   CARGO_REGISTRIES_CREDIBIL_TOKEN: ${{ secrets.CARGO_REGISTRIES_CREDIBIL_TOKEN }}
+  SCCACHE_GHA_ENABLED: "true"
+  RUSTC_WRAPPER: "sccache"
 
 jobs:
   clippy:
@@ -28,6 +30,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
+      - uses: mozilla-actions/sccache-action@v0.0.9
       - run: cargo clippy --all-features
 
   test:
@@ -35,6 +38,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
+      - uses: mozilla-actions/sccache-action@v0.0.9
       - uses: taiki-e/install-action@nextest
       - run: cargo nextest run --all --all-features  --no-tests=pass
 
@@ -43,6 +47,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
+      - uses: mozilla-actions/sccache-action@v0.0.9
       - name: Check if library target exists
         id: lib
         run: |
@@ -59,6 +64,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
+      - uses: mozilla-actions/sccache-action@v0.0.9
       - uses: taiki-e/install-action@v2
         with:
           tool: cargo-vet
@@ -69,6 +75,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
+      - uses: mozilla-actions/sccache-action@v0.0.9
       - uses: dtolnay/rust-toolchain@miri
       - uses: taiki-e/install-action@nextest
       - run: |
@@ -83,6 +90,7 @@ jobs:
   #   runs-on: ubuntu-latest
   #   steps:
   #     - uses: actions/checkout@v5
+  #     - uses: mozilla-actions/sccache-action@v0.0.9
   #     - uses: dtolnay/install@cargo-outdated
   #     - run: cargo outdated --workspace --depth 1 --exit-code 1
   #       if: ${{ inputs.outdated == '' }}
@@ -94,6 +102,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
+      - uses: mozilla-actions/sccache-action@v0.0.9
       - uses: EmbarkStudios/cargo-deny-action@v2
         with:
           arguments: --workspace
