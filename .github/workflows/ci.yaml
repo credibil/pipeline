@@ -21,8 +21,6 @@ permissions:
 env:
   RUSTFLAGS: -Dwarnings
   CARGO_REGISTRIES_CREDIBIL_TOKEN: ${{ secrets.CARGO_REGISTRIES_CREDIBIL_TOKEN }}
-  SCCACHE_GHA_ENABLED: "true"
-  RUSTC_WRAPPER: "sccache"
 
 jobs:
   clippy:
