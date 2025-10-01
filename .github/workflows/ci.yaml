@@ -31,6 +31,13 @@ jobs:
       - uses: mozilla-actions/sccache-action@v0.0.9
       - run: cargo clippy --all-features
 
+  fmt:
+    name: Format
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - run: cargo +nightly fmt --all --check
+
   test:
     name: Test
     runs-on: ubuntu-latest
