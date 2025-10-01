@@ -37,7 +37,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - run: |
-          rustup component add --toolchain nightlyrustfmt
+          rustup component add --toolchain nightly rustfmt
           cargo +nightly fmt --all --check
 
   test:
