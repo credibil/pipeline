@@ -1,4 +1,4 @@
-# Creates a patch version on a release branch. 
+# Creates a patch version on a release branch.
 # The workflow bumps the patch version and updates the release notes for the
 # selected branch.
 
@@ -6,9 +6,15 @@ name: Create Patch
 
 on:
   workflow_call:
+    secrets:
+      CARGO_REGISTRIES_CREDIBIL_TOKEN:
+        required: true
 
 permissions:
   contents: write
+
+env:
+  CARGO_REGISTRIES_CREDIBIL_TOKEN: ${{ secrets.CARGO_REGISTRIES_CREDIBIL_TOKEN }}
 
 jobs:
   skip:
@@ -19,7 +25,7 @@ jobs:
       - run: |
           echo "This workflow only runs on the 'release-*' branches"
           exit 1
-          
+
   # Increment patch version and update RELEASES.md
   # Push back to the release-<version> branch for review and publishing
   patch:
@@ -28,7 +34,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-        
+
       - name: Set git identity
         uses: credibil/pipeline/.github/actions/git-identity@main
 
