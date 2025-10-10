@@ -6,6 +6,11 @@ name: Create Patch
 
 on:
   workflow_call:
+    inputs:
+      artifacts:
+        description: Release artifacts to attach to the release
+        type: string
+        required: false
     secrets:
       CARGO_REGISTRIES_CREDIBIL_TOKEN:
         required: true
@@ -44,11 +49,12 @@ jobs:
         with:
           increment: patch
 
-      - name: Check semver
-        uses: obi1kenobi/cargo-semver-checks-action@v2
-        with:
-          baseline-rev: ${{ github.ref_name }}
-          release-type: patch
+      # TODO: Re-enable semver check with flag to skip for non-library repos
+      # - name: Check semver
+      #   uses: obi1kenobi/cargo-semver-checks-action@v2
+      #   with:
+      #     baseline-rev: ${{ github.ref_name }}
+      #     release-type: patch
 
       - name: Update release notes
         uses: credibil/pipeline/.github/actions/release-notes@main
