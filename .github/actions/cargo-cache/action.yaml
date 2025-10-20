@@ -1,0 +1,18 @@
+name: Git identity
+description: Set Git identity for the workflow.
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/cache@v4
+      with:
+        path: |
+          ~/.cargo/bin/
+          ~/.cargo/git/db/
+          ~/.cargo/registry/
+          target/
+        key: cargo-${{ hashFiles('**/Cargo.lock') }}
+      
+    - name: Populate cache
+      shell: bash
+      run: cargo update
