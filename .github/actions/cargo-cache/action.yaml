@@ -12,7 +12,3 @@ runs:
           ~/.cargo/registry/
           target/
         key: cargo-${{ hashFiles('**/Cargo.lock') }}
-      
-    - name: Populate cache
-      shell: bash
-      run: cargo fetch
