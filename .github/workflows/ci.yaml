@@ -23,23 +23,25 @@ env:
   CARGO_REGISTRIES_CREDIBIL_TOKEN: ${{ secrets.CARGO_REGISTRIES_CREDIBIL_TOKEN }}
 
 jobs:
-  # cache-deps:
-  #   name: Cache
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v5
-  #     - uses: actions/cache@v4
-  #       with:
-  #         path: |
-  #           ~/.cargo/bin/
-  #           ~/.cargo/git/db/
-  #           ~/.cargo/registry/
-  #           target/
-  #         key: cargo-${{ hashFiles('**/Cargo.lock') }}
+  cache:
+    name: Cache
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/git/db/
+            ~/.cargo/registry/
+            target/
+          key: cargo-${{ hashFiles('**/Cargo.lock') }}
+      - run: cargo fetch
 
   clippy:
     name: Clippy
     runs-on: ubuntu-latest
+    needs: cache
     steps:
       - uses: actions/checkout@v5
       - uses: credibil/pipeline/.github/actions/cargo-cache@main
@@ -49,6 +51,7 @@ jobs:
   fmt:
     name: Format
     runs-on: ubuntu-latest
+    needs: cache
     steps:
       - uses: actions/checkout@v5
       - uses: credibil/pipeline/.github/actions/cargo-cache@main
@@ -59,6 +62,7 @@ jobs:
   test:
     name: Test
     runs-on: ubuntu-latest
+    needs: cache
     steps:
       - uses: actions/checkout@v5
       - uses: credibil/pipeline/.github/actions/cargo-cache@main
@@ -69,6 +73,7 @@ jobs:
   test-doc:
     name: Test docs
     runs-on: ubuntu-latest
+    needs: cache
     steps:
       - uses: actions/checkout@v5
       - uses: credibil/pipeline/.github/actions/cargo-cache@main
@@ -87,6 +92,7 @@ jobs:
   vet:
     name: Vet
     runs-on: ubuntu-latest
+    needs: cache
     steps:
       - uses: actions/checkout@v5
       - uses: credibil/pipeline/.github/actions/cargo-cache@main
@@ -99,6 +105,7 @@ jobs:
   miri:
     name: Miri
     runs-on: ubuntu-latest
+    needs: cache
     steps:
       - uses: actions/checkout@v5
       - uses: credibil/pipeline/.github/actions/cargo-cache@main
@@ -115,6 +122,7 @@ jobs:
   # outdated:
   #   name: Outdated
   #   runs-on: ubuntu-latest
+  #   needs: cache
   #   steps:
   #     - uses: actions/checkout@v5
   #     - uses: credibil/pipeline/.github/actions/cargo-cache@main
@@ -128,6 +136,7 @@ jobs:
   deny:
     name: Deny
     runs-on: ubuntu-latest
+    needs: cache
     steps:
       - uses: actions/checkout@v5
       - uses: credibil/pipeline/.github/actions/cargo-cache@main
