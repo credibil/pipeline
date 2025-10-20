@@ -28,14 +28,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - uses: actions/cache@v4
-        with:
-          path: |
-            ~/.cargo/bin/
-            ~/.cargo/git/db/
-            ~/.cargo/registry/
-            target/
-          key: cargo-${{ hashFiles('**/Cargo.lock') }}
+      - uses: credibil/pipeline/.github/actions/cargo-cache@main
       - run: cargo fetch
 
   clippy:
