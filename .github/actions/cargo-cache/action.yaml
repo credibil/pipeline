@@ -15,4 +15,4 @@ runs:
       
     - name: Populate cache
       shell: bash
-      run: cargo update
+      run: cargo fetch
