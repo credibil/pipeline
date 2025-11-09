@@ -35,6 +35,8 @@ jobs:
     outputs:
       tag: ${{ steps.tag.outputs.new_tag }}
       version: ${{ steps.cargo.outputs.version }}
+      notes: ${{ steps.notes.outputs.notes }}
+
     steps:
       - uses: actions/checkout@v5
         with:
@@ -51,9 +53,18 @@ jobs:
         run: |
           set -ex
           sed -i "s/^Unreleased/Released $(date +'%Y-%m-%d')/" RELEASES.md
-          
           git commit -am "Release ${{ steps.cargo.outputs.version }}"
           git push origin
+
+      - name: Output release notes
+        id: notes
+        run: |
+          notes=$(cat RELEASES.md)
+          {
+            echo 'notes<<EOF'
+            echo "${notes}"
+            echo EOF
+          } >> $GITHUB_OUTPUT
 
       - name: Bump version and push tag
         id: tag
@@ -67,23 +78,10 @@ jobs:
     needs: tag
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
-
-      - name: Get release notes
-        id: notes
-        run: |
-          notes=$(cat RELEASES.md)
-          {
-            echo 'notes<<EOF'
-            echo "${notes}"
-            echo EOF
-          } >> $GITHUB_OUTPUT
-
-      - name: Create a GitHub release
-        uses: ncipollo/release-action@v1
+      - uses: ncipollo/release-action@v1
         with:
           tag: ${{ needs.tag.outputs.tag }}
           name: Release ${{ needs.tag.outputs.tag }}
-          body: ${{ steps.notes.outputs.notes }}
+          body: ${{ needs.tag.outputs.notes }}
           immutableCreate: true
           artifacts: ${{ inputs.artifacts }}
