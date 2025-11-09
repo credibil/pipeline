@@ -21,7 +21,7 @@ permissions:
 jobs:
   skip:
     name: Skipped
-    if: ${{ !startsWith(github.ref_name, 'release-') }}
+    if: startsWith(github.ref_name, 'release-') == false
     runs-on: ubuntu-latest
     steps:
       - run: |
@@ -30,7 +30,7 @@ jobs:
 
   tag:
     name: Tag release
-    if: ${{ startsWith(github.ref_name, 'release-') }}
+    if: startsWith(github.ref_name, 'release-')
     runs-on: ubuntu-latest
     outputs:
       tag: ${{ steps.tag.outputs.new_tag }}
