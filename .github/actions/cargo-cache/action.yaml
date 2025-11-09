@@ -9,6 +9,7 @@ runs:
         path: |
           ~/.cargo
           target
-        key: cargo-${{ hashFiles('**/Cargo.lock') }}
+        key: cargo-${{ hashFiles('Cargo.lock') }}
         restore-keys: |
+          cargo-${{ hashFiles('Cargo.lock') }}
           cargo-
