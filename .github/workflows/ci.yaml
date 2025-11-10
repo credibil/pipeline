@@ -101,9 +101,8 @@ jobs:
       - uses: dtolnay/rust-toolchain@miri
       - uses: taiki-e/install-action@nextest
       - run: |
-          rustup override set nightly
-          cargo miri setup
-          cargo miri nextest run --no-tests=pass
+          cargo +nightly miri setup
+          cargo +nightly miri nextest run --no-tests=pass
         # env:
         #   MIRIFLAGS: -Zmiri-strict-provenance
 
