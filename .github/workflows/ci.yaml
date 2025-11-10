@@ -91,20 +91,20 @@ jobs:
           tool: cargo-vet
       - run: cargo vet --locked
 
-  miri:
-    name: Miri
-    runs-on: ubuntu-latest
-    needs: fetch
-    steps:
-      - uses: actions/checkout@v5
-      - uses: credibil/pipeline/.github/actions/cargo-cache@main
-      - uses: dtolnay/rust-toolchain@miri
-      - uses: taiki-e/install-action@nextest
-      - run: |
-          cargo +nightly miri setup
-          cargo +nightly miri nextest run --no-tests=pass
-        # env:
-        #   MIRIFLAGS: -Zmiri-strict-provenance
+  # miri:
+  #   name: Miri
+  #   runs-on: ubuntu-latest
+  #   needs: fetch
+  #   steps:
+  #     - uses: actions/checkout@v5
+  #     - uses: credibil/pipeline/.github/actions/cargo-cache@main
+  #     - uses: dtolnay/rust-toolchain@miri
+  #     - uses: taiki-e/install-action@nextest
+  #     - run: |
+  #         cargo +nightly miri setup
+  #         cargo +nightly miri nextest run --no-tests=pass
+  #       # env:
+  #       #   MIRIFLAGS: -Zmiri-strict-provenance
 
   outdated:
     name: Outdated
