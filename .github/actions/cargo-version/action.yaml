@@ -9,47 +9,59 @@ inputs:
     default: none
 
 outputs:
+  previous-version:
+    description: Cargo version
+    value: ${{ steps.previous.outputs.version }}
   version:
     description: Cargo version
-    value: ${{ steps.current.outputs.version }}
+    value: ${{ steps.increment.outputs.version }}
 
 runs:
   using: composite
   steps:
+    - name: Read previous version
+      id: previous
+      shell: bash
+      run: |
+        version=$(grep '^version =' Cargo.toml | head -n 1 | sed 's/.*"\(.*\)"/\1/')
+        echo "version=$version" >> $GITHUB_OUTPUT
+
     - name: Increment version
       if: ${{ inputs.increment != 'none' }}
       id: increment
       shell: bash
       run: |
-        current=$(grep '^version =' Cargo.toml | head -n 1 | sed 's/.*"\(.*\)"/\1/')
+        previous=${{ steps.previous.outputs.version }}
+
         case "${{ inputs.increment }}" in
           major)
-            IFS='.' read -r major minor patch <<< "$current"
+            IFS='.' read -r major minor patch <<< "$previous"
             version="$((major + 1)).0.0"
             ;;
           minor)
-            IFS='.' read -r major minor patch <<< "$current"
+            IFS='.' read -r major minor patch <<< "$previous"
             version="$major.$((minor + 1)).0"
             ;;
           *)
-            IFS='.' read -r major minor patch <<< "$current"
+            IFS='.' read -r major minor patch <<< "$previous"
             version="$major.$minor.$((patch + 1))"
             ;;
         esac
 
-        # update workspace version PLUS referenced workspace crates
+        echo "version=$version" >> $GITHUB_OUTPUT
+
+    - name: Update workspace
+      if: ${{ inputs.increment != 'none' }}
+      shell: bash
+      run: |
+        version=${{ steps.increment.outputs.version }}
+
+        # update workspace version including workspace crate references
         sed -i "s/^version = .*/version = \"$version\"/1" Cargo.toml
         sed -Ei "s/(^.*path = .*), version = \"[0-9.]+\"(.*$)/\1, version = \"$version\"\2/g" Cargo.toml
         sed -Ei "s/(^.*)version = \"[0-9.]+\", (.*)(path = .*$)/\1version = \"$version\", \2 \3/g" Cargo.toml
-        
+
         # update versions in member crates
         cargo generate-lockfile
 
         git commit -am "Increment Cargo version to $version"
-
-    - name: Read version
-      id: current
-      shell: bash
-      run: |
-        version=$(grep '^version =' Cargo.toml | head -n 1 | sed 's/.*"\(.*\)"/\1/')
-        echo "version=$version" >> $GITHUB_OUTPUT

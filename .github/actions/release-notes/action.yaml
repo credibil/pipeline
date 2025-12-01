@@ -2,6 +2,9 @@ name: Prepare release notes
 description: Prepare release notes for an upcoming release
 
 inputs:
+  previous-version:
+    description: The previous release notes version.
+    required: false
   version:
     description: The release notes version.
     required: true
@@ -22,6 +25,7 @@ runs:
           const response = await github.rest.repos.generateReleaseNotes({
             owner: context.repo.owner,
             repo: context.repo.repo,
+            previous_tag_name: "v${{ inputs.previous-version }}",
             tag_name: "v${{ inputs.version }}",
           })
           return response.data.body;
@@ -104,4 +108,3 @@ runs:
       shell: bash
       run: |
         git commit -am "Update release notes for ${{ inputs.version }}"
-        
