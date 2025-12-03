@@ -2,11 +2,8 @@ name: Prepare release notes
 description: Prepare release notes for an upcoming release
 
 inputs:
-  previous-version:
-    description: The previous release notes version.
-    required: false
   version:
-    description: The release notes version.
+    description: The version to use for release notes.
     required: true
   release-type:
     description: One of 'major', 'minor', 'patch', or 'next'.
@@ -15,6 +12,20 @@ inputs:
 runs:
   using: composite
   steps:
+    - name: Get previous version
+      if: ${{ inputs.previous-version == '' }}
+      id: previous
+      uses: actions/github-script@v8
+      with:
+        result-encoding: string
+        script: |
+          const tags = await github.rest.repos.listTags({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            per_page: 2,
+          });
+          return tags.data[1].name;
+
     - name: Generate release notes
       if: ${{ inputs.release-type != 'next' }}
       id: notes
@@ -25,7 +36,7 @@ runs:
           const response = await github.rest.repos.generateReleaseNotes({
             owner: context.repo.owner,
             repo: context.repo.repo,
-            previous_tag_name: "v${{ inputs.previous-version }}",
+            previous_tag_name: "${{ steps.previous.outputs.result }}",
             tag_name: "v${{ inputs.version }}",
           })
           return response.data.body;

@@ -9,41 +9,41 @@ inputs:
     default: none
 
 outputs:
-  previous-version:
-    description: Cargo version
-    value: ${{ steps.previous.outputs.version }}
   version:
     description: Cargo version
-    value: ${{ steps.increment.outputs.version }}
+    value: ${{ steps.current.outputs.version }}
 
 runs:
   using: composite
   steps:
-    - name: Read previous version
-      id: previous
+    - name: Read current version
+      id: current
       shell: bash
       run: |
         version=$(grep '^version =' Cargo.toml | head -n 1 | sed 's/.*"\(.*\)"/\1/')
         echo "version=$version" >> $GITHUB_OUTPUT
 
+    # -------------------------------------------
+    # Only increment version when requested
+    # -------------------------------------------
     - name: Increment version
       if: ${{ inputs.increment != 'none' }}
       id: increment
       shell: bash
       run: |
-        previous=${{ steps.previous.outputs.version }}
+        current=${{ steps.current.outputs.version }}
 
         case "${{ inputs.increment }}" in
           major)
-            IFS='.' read -r major minor patch <<< "$previous"
+            IFS='.' read -r major minor patch <<< "$current"
             version="$((major + 1)).0.0"
             ;;
           minor)
-            IFS='.' read -r major minor patch <<< "$previous"
+            IFS='.' read -r major minor patch <<< "$current"
             version="$major.$((minor + 1)).0"
             ;;
           *)
-            IFS='.' read -r major minor patch <<< "$previous"
+            IFS='.' read -r major minor patch <<< "$current"
             version="$major.$minor.$((patch + 1))"
             ;;
         esac

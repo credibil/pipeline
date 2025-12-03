@@ -55,7 +55,6 @@ jobs:
         with:
           release-type: major
           version: ${{ steps.release.outputs.version }}
-          previous-version: ${{ steps.release.outputs.previous-version }}
 
       - name: Push to release branch
         run: git push origin HEAD:release-${{ steps.release.outputs.version }}
