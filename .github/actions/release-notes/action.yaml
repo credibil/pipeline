@@ -24,7 +24,7 @@ runs:
             repo: context.repo.repo,
             per_page: 2,
           });
-          return tags.data[1].name;
+          return tags.data[1]?.name ?? '';
 
     - name: Generate release notes
       if: ${{ inputs.release-type != 'next' }}
